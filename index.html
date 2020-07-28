@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>/weather</title>
+</head>
+<style>
+    body {     
+        background: url('https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        text-align: center;
+        color: rgb(212, 173, 145);     
+        margin-top: 4em;
+        font-family: 'Permanent Marker', cursive;
+        font-family: 'Righteous', cursive;
+}
+    
+    input {
+	margin-bottom: 20px;
+    background-color: rgb(211, 168, 138);
+    border-radius: 8px;
+    color: rgb(22, 33, 44);
+    font-size: 1.5em;
+}
+.warm {
+    color: rgb(220, 157, 20);
+}
+.hot {
+    color: rgb(184, 66, 11);
+
+}
+.fire {
+    color: rgb(204, 50, 50);
+}
+.rain {
+  color: rgb(71, 133, 233);
+}
+.cloud {
+    color: rgb(188, 194, 199);
+}
+
+#icon {
+    font-size: 3em;
+}
+button {
+    background-color: rgb(211, 168, 138);
+    border-radius: 8px;
+    font-size: 1.5em;
+}
+.clear {
+    color: rgb(20, 213, 220); 
+}
+
+</style>
+    <body>
+        <br>
+
+
+        <input type="text" placeholder="zip Code" id="zipcode">
+        <button onclick="lookupWeather();">Go</button>
+        <h1 id="weather-message"></h1> 
+        <span id="icon"><i class="fa fa-thermometer-full" aria-hidden="true"></i></span>
+        <hr>
+        
+
+        <script type="text/javascript">
+            getWeather(70112);
+
+        function lookupWeather(){
+            var zipcode = document.getElementById("zipcode");
+            getWeather(zipcode.value);
+        }
+
+        function getWeather(zipcode) {
+            let request = new XMLHttpRequest();            
+            request.onreadystatechange = function() {
+                if (request.readyState == XMLHttpRequest.DONE) {  
+                    if (request.status == 200) {
+                        let forecast = JSON.parse(request.responseText);
+                        console.log(forecast);                    
+                        
+                        let conditions = forecast.name + " is currently " + forecast.weather[0].main + ", and " + forecast.main.temp + " degrees.";
+                            console.log(conditions);
+                            document.getElementById("weather-message").innerText = conditions;
+                        let icon = document.getElementById("icon");
+
+                            if (forecast.main.temp >  80 && forecast.main.temp < 90) {
+                               console.log("hot");
+                               icon.className ="hot";                           
+                            }
+                            else if (forecast.main.temp >= 90) {                    
+                               icon.className ="fire";
+                            }
+                            if (forecast.weather[0].main == "Rain") {
+                                icon.className ="rain"; 
+                                icon.innerHTML = '<i class="fa fa-tint" aria-hidden="true"></i>';
+                            }
+                            if (forecast.weather[0].main == "Clouds") {
+                                icon.className ="cloud"; 
+                                icon.innerHTML = '<i class="fa fa-cloud" aria-hidden="true"></i>';
+                            }
+                            if (forecast.main.temp >  60 && forecast.main.temp < 80) {
+                               icon.className ="warm";
+                            }
+                            if (forecast.weather[0].main == "Clear") {
+                                icon.className ="clear"; 
+                                icon.innerHTML = '<i class="fa fa-thermometer-full" aria-hidden="true"></i>';
+                            }
+                        }
+                        else {
+                            alert('There was an error');
+                        }
+                    }
+                };
+            
+                request.open("GET", "http://api.openweathermap.org/data/2.5/weather?zip=" + zipcode + ",US&units=imperial&appid=ccef2c8c8034982955bec1e0b2a83e36", true);
+                request.send();
+            }
+        </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>  
+    </body>
+
+</html>
